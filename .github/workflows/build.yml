@@ -1,0 +1,23 @@
+name: "Build development"
+on: push
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: install build tools
+        run: sudo apt-get update && sudo apt-get -y install cc65
+      - uses: actions/checkout@v2
+      - name: build
+        run: make main-mmc1.nes
+      - name: extract
+        run: gpg --quiet --batch --yes --decrypt --passphrase="$SECRET" --output original.nes smb1.gpg
+      - name: create ips
+        run: python scripts/ips.py create --output output.ips original.nes main-mmc1.nes
+      - name: zip
+        run: zip patch.ips README.md patch.zip
+      - name: upload
+        uses: actions/upload-artifact@v1
+        with:
+          name: patch
+          path: patch.zip

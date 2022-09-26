@@ -1,0 +1,47 @@
+name: "Build release"
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: install build tools
+        run: sudo apt-get update && sudo apt-get -y install cc65
+      - uses: actions/checkout@v2
+      - name: build
+        run: make main-mmc1.nes
+      - name: extract
+        run: gpg --quiet --batch --yes --decrypt --passphrase="$SECRET" --output original.nes smb1.gpg
+      - name: create ips
+        run: python scripts/ips.py create --output output.ips original.nes main-mmc1.nes
+      - name: zip
+        run: zip patch.ips README.md "patch_${{ github.ref }}.zip"
+      - name: upload
+        uses: actions/upload-artifact@v2
+        with:
+          name: files
+          path: "patch_${{ github.ref }}.zip"
+      - name: create release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: "Release ${{ github.ref }}"
+          draft: false
+          prerelease: true
+      - name: Download build assets
+        uses: actions/download-artifact@v2
+        with:
+          name: files
+          path: files
+      - name: Upload release assets
+        uses: alexellis/upload-assets@0.2.2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          asset_paths: '["./files/*"]'
