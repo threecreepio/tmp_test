@@ -15,16 +15,16 @@ jobs:
       - name: build
         run: make main-mmc1.nes
       - name: extract
-        run: gpg --quiet --batch --yes --decrypt --passphrase="$SECRET" --output original.nes smb1.gpg
+        run: gpg --quiet --batch --yes --decrypt --passphrase="${{ secrets.SECRET }}" --output original.nes smb1.gpg
       - name: create ips
         run: python scripts/ips.py create --output output.ips original.nes main-mmc1.nes
       - name: zip
-        run: zip patch.ips README.md "patch_${{ github.ref }}.zip"
+        run: zip patch.zip README.md patch.ips
       - name: upload
         uses: actions/upload-artifact@v2
         with:
-          name: files
-          path: "patch_${{ github.ref }}.zip"
+          name: patch.zip
+          path: patch.zip
       - name: create release
         uses: actions/create-release@v1
         env:
@@ -37,8 +37,8 @@ jobs:
       - name: Download build assets
         uses: actions/download-artifact@v2
         with:
-          name: files
-          path: files
+          name: patch.zip
+          path: "patch_${{ github.ref }}.zip"
       - name: Upload release assets
         uses: alexellis/upload-assets@0.2.2
         env:
