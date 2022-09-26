@@ -51,6 +51,5 @@ jobs:
         with:
           name: "${GITHUB_REF#refs/*/}"
           bodyFile: CHANGELOG
-          tag_name: ${{ github.ref }}
           artifacts: "files/*"
           token: ${{ secrets.GITHUB_TOKEN }}
