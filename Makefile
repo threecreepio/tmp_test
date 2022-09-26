@@ -42,9 +42,9 @@ patch.zip: patch.ips
 
 patch.ips: smb.nes
 ifdef PAL
-	scripts/flips original_pal.nes smb.nes patch.ips
+	python scripts/ips.py create --output patch.ips original_pal.nes smb.nes
 else
-	scripts/flips original.nes smb.nes patch.ips
+	python scripts/ips.py create --output patch.ips original.nes smb.nes
 endif
 
 inc/wram.inc: wram/ram_layout.asm $(OUT)/ram_layout.map
