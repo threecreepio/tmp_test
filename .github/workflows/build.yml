@@ -20,7 +20,7 @@ jobs:
       - name: create ips
         run: python scripts/ips.py create --output output.ips original.nes main-mmc1.nes
       - name: zip
-        run: zip patch.ips README.md patch.zip
+        run: zip patch.zip README.md patch.ips
       - name: upload
         uses: actions/upload-artifact@v1
         with:
