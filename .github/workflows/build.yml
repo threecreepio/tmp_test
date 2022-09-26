@@ -1,5 +1,10 @@
 name: "Build development"
-on: push
+
+on:
+  push:
+    branches:
+      - main
+      - master
 
 jobs:
   build:
@@ -11,7 +16,7 @@ jobs:
       - name: build
         run: make main-mmc1.nes
       - name: extract
-        run: gpg --quiet --batch --yes --decrypt --passphrase="$SECRET" --output original.nes smb1.gpg
+        run: gpg --quiet --batch --yes --decrypt --passphrase="${{ secrets.SECRET }}" --output original.nes smb1.gpg
       - name: create ips
         run: python scripts/ips.py create --output output.ips original.nes main-mmc1.nes
       - name: zip
