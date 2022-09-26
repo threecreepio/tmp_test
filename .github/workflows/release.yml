@@ -20,12 +20,12 @@ jobs:
         run: gpg --quiet --batch --yes --decrypt --passphrase="${{ secrets.SECRET }}" --output original_pal.nes game_pal.gpg
       - name: build pal
         run: PAL=1 make patch.ips && mv patch.ips patch_pal.ips
+      - name: clean
+        run: make clean
       - name: prepare ntsc
         run: gpg --quiet --batch --yes --decrypt --passphrase="${{ secrets.SECRET }}" --output original.nes game_ntsc.gpg
       - name: build ntsc
         run: make patch.ips
-      - name: clean
-        run: make clean
       - name: zip
         run: zip "pellsson_${GITHUB_REF#refs/*/}.zip" README.md patch.ips patch_pal.ips
       - name: upload
@@ -54,6 +54,5 @@ jobs:
         with:
           name: "${{ steps.get_version.outputs.VERSION }}"
           bodyFile: CHANGELOG
-          tag_name: ${{ github.ref }}
           artifacts: "files/*"
           token: ${{ secrets.GITHUB_TOKEN }}
