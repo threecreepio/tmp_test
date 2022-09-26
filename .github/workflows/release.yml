@@ -23,14 +23,15 @@ jobs:
       - name: upload
         uses: actions/upload-artifact@v2
         with:
-          name: patch.zip
-          path: patch.zip
-      - name: Download build assets
-        uses: actions/download-artifact@v2
-        with:
-          name: patch.zip
-          path: "patch_${{ github.ref }}.zip"
+          name: files
+          path: "*.zip"
+
+  upload:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
       - name: create release
+        depends_on: upload
         uses: actions/create-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -39,9 +40,14 @@ jobs:
           release_name: "Release ${{ github.ref }}"
           draft: false
           prerelease: true
-      - name: Upload release assets
+      - name: get assets
+        uses: actions/download-artifact@v2
+        with:
+          name: files
+          path: files
+      - name: upload assets
         uses: alexellis/upload-assets@0.2.2
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          asset_paths: '["./patch_*.zip"]'
+          asset_paths: '["./files/*"]'
