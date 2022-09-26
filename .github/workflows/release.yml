@@ -31,7 +31,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: create release
-        depends_on: upload
         uses: actions/create-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
