@@ -2,7 +2,7 @@ AS = ca65
 LD = ld65
 VERSION_MAJOR ?= 5
 VERSION_MINOR ?= 6
-AFLAGS = -W0 -U -I inc -g -DVERSION_MAJOR=$(VERSION_MAJOR) -DVERSION_MINOR=$(VERSION_MINOR)
+AFLAGS = -W0 -U -I inc -g --create-dep "$@.dep" -DVERSION_MAJOR=$(VERSION_MAJOR) -DVERSION_MINOR=$(VERSION_MINOR)
 ifdef PAL
 AFLAGS += -DPAL
 endif
@@ -110,3 +110,5 @@ smb.nes: $(OBJECTS)
 
 clean:
 	rm -f build/*
+
+include $(wildcard build/*.dep)
