@@ -29,9 +29,6 @@ GEN_SCENARIOS = scen/scenario_data.asm
 
 all: smb.nes
 
-run: smb.nes
-	wine fceux/fceux.exe smb.nes
-
 smb.nes: smb.bin
 	cat ines.bin smb.bin > smb.nes
 
