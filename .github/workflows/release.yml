@@ -17,7 +17,7 @@ jobs:
       - name: create version number
         run: |
           VERSION=$(echo $GITHUB_REF | cut -d / -f 3)
-          printf '.byte "%-5s"'' ${VERSION^^} > version.asm
+          printf '.byte "%-5s"' ${VERSION^^} > version.asm
       - name: clean
         run: make clean
       - name: prepare pal
